@@ -13,12 +13,12 @@ public class GaloisLFSR {
 
     public GaloisLFSR(final int degree, final Polynomial feedback, final long seed) {
         this.feedback = feedback.getLong();
-        maxTap = (1 << degree);
+        maxTap = (long)Math.pow(2, degree);
         state = seed;
     }
 
     public final void clock() {
-        state <<= 1;
+        state *= 2;
         state ^= (((maxTap & state) == 0) ? 0 : feedback);
     }
 
