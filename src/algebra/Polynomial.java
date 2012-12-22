@@ -1,5 +1,6 @@
 package algebra;
 
+import java.util.*;
 import prng.*;
 
 /**
@@ -35,6 +36,21 @@ public class Polynomial {
         return order;
     }
 
+    public final boolean isOrderAtLeast(final long test) {
+        final GaloisLFSR lfsr = new GaloisLFSR(this.getDegree(), this, 1);
+        lfsr.clock();
+        order = 1;
+        while(lfsr.getState() != 1) {
+            order++;
+            if(order >= test) {
+                order = -1;
+                return true;
+            }
+            lfsr.clock();
+        }
+        return false;
+    }
+
     public final int getDegree() {
         if(degree == -1) {
             degree = 63 - Long.numberOfLeadingZeros(representation);
@@ -54,10 +70,10 @@ public class Polynomial {
     }
 
     public static Polynomial getPrimitive(final int degree, final long start) {
-        final long requiredOrder = (1 << degree) - 1;
+        final long requiredOrder = (long)(Math.pow(2, degree) - 1);
         long test = start;
         Polynomial polynomial = new Polynomial(test);
-        while(polynomial.getWeight() % 2 == 0 || !polynomial.isMonomial() || polynomial.getDegree() < degree || polynomial.getOrder() < requiredOrder) {
+        while(polynomial.getWeight() % 2 == 0 || !polynomial.isMonomial() || polynomial.getDegree() < degree || polynomial.getOrder() != requiredOrder) {
             test++;
             polynomial = new Polynomial(test);
         }
