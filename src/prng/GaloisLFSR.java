@@ -7,26 +7,30 @@ import algebra.*;
  * @author UndeadScythes
  */
 public class GaloisLFSR {
-    private final transient long feedback;
-    private final transient long maxTap;
-    private transient long state;
+    private final transient int feedback;
+    private final transient int maxTap;
+    private transient int state;
 
-    public GaloisLFSR(final int degree, final Polynomial feedback, final long seed) {
-        this.feedback = feedback.getLong();
-        maxTap = (long)Math.pow(2, degree);
+    public GaloisLFSR(final int degree, final Polynomial feedback, final int seed) {
+        this.feedback = feedback.toInt();
+        maxTap = 1 << degree;
         state = seed;
     }
 
     public final void clock() {
-        state *= 2;
-        state ^= (((maxTap & state) == 0) ? 0 : feedback);
+        state <<= 1;
+        state ^= ((maxTap & state) == 0) ? 0 : feedback;
     }
 
-    public final long getState() {
+    public final int getState() {
         return state;
     }
 
     public final int getBit(final int bit) {
         return ((state & (1 << bit)) == 0) ? 0 : 1;
+    }
+
+    public final void reset(final int newSeed) {
+        state = newSeed;
     }
 }
