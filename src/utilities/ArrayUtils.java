@@ -13,4 +13,14 @@ public class ArrayUtils {
         }
         return newArray;
     }
+
+    public static int count(final int item, final int[] array) {
+        int count = 0;
+        for(int i = 0; i < array.length; i++) {
+            if(array[i] == item) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
