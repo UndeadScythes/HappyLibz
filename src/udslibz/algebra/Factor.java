@@ -1,4 +1,4 @@
-package algebra;
+package udslibz.algebra;
 
 import java.util.*;
 

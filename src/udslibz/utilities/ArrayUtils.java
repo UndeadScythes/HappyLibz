@@ -1,4 +1,4 @@
-package utilities;
+package udslibz.utilities;
 
 /**
  * For manipulating arrays.

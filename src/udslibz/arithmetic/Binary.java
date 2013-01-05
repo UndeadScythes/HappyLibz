@@ -1,4 +1,4 @@
-package arithmetic;
+package udslibz.arithmetic;
 
 import java.util.*;
 
@@ -8,7 +8,7 @@ import java.util.*;
  */
 public class Binary {
     public static String toString(final int value, final int length) {
-        String string = Long.toBinaryString(value);
+        String string = Integer.toBinaryString(value);
         while(string.length() < length) {
             string = "0".concat(string);
         }
