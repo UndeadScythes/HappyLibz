@@ -26,6 +26,14 @@ public class Polynomial {
         weight = Integer.bitCount(representation);
     }
 
+    public boolean equalTo(final Polynomial poly) {
+        return poly.toInt() == representation;
+    }
+
+    public Polynomial copy() {
+        return new Polynomial(representation);
+    }
+
     public final int getDegree() {
         return degree;
     }
@@ -64,12 +72,12 @@ public class Polynomial {
         return toBinary();
     }
 
-    public final String toString(final char var) {
+    public final String toString(final String var) {
         String binary = Integer.toBinaryString(representation);
         String temp = "";
         for(int i = 0; i < binary.length() - 2; i++) {
             if(binary.charAt(i) == '1') {
-                temp = temp.concat(String.valueOf(var).concat("^" + (degree - i) + " + "));
+                temp = temp.concat(var.concat("^" + (degree - i) + " + "));
             }
         }
         if(binary.length() > 1 && binary.charAt(binary.length() - 2) == '1') {
@@ -122,6 +130,19 @@ public class Polynomial {
         refresh();
     }
 
+    public final void multiplyMod(final Polynomial multiply, final Polynomial mod) {
+        multiply(multiply);
+        modulo(mod);
+    }
+
+    public final void modulo(final Polynomial mod) {
+        int diff = getDegree() - mod.getDegree();
+        while(diff >= 0) {
+            add(Polynomial.product(mod, (1 << diff)));
+            diff = getDegree() - mod.getDegree();
+        }
+    }
+
     public final Polynomial nextPoly() {
         return new Polynomial(representation + 1);
     }
@@ -156,12 +177,7 @@ public class Polynomial {
         if(e == 0) return new Polynomial(1);
         final Polynomial temp = new Polynomial(poly.toInt());
         for(int i = 1; i < e; i++) {
-            temp.multiply(poly);
-            int diff = temp.getDegree() - mod.getDegree();
-            while(diff >= 0) {
-                temp.add(Polynomial.product(mod, (1 << diff)));
-                diff = temp.getDegree() - mod.getDegree();
-            }
+            temp.multiplyMod(poly, mod);
         }
         return temp;
     }
