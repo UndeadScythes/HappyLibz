@@ -1,4 +1,6 @@
-package udslibz.arithmetic;
+package udslibz.utilities;
+
+
 
 import java.util.*;
 
@@ -6,7 +8,7 @@ import java.util.*;
  * Binary tools.
  * @author UndeadScythes
  */
-public class Binary {
+public class BinaryUtils {
     public static String toString(final int value, final int length) {
         String string = Integer.toBinaryString(value);
         while(string.length() < length) {

@@ -4,7 +4,7 @@ package udslibz.utilities;
  * Utilities for fetching values from argument lists.
  * @author UndeadScythes
  */
-public final class Args {
+public final class ArgUtils {
     public static int getInt(final String[] args, final String tag, final int def) {
         for(int i = 0; i < args.length; i++) {
             if(args[i].equals(tag)) {
@@ -20,5 +20,5 @@ public final class Args {
         return def;
     }
 
-    private Args() {}
+    private ArgUtils() {}
 }

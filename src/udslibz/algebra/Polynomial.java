@@ -1,10 +1,12 @@
 package udslibz.algebra;
 
-import udslibz.arithmetic.*;
-import udslibz.prng.*;
+import udslibz.prng.GaloisLFSR;
+import java.util.*;
+import udslibz.utilities.BinaryUtils;
+import udslibz.prng.GaloisLFSR;
 
 /**
- * A polynomial, currently only binary.
+ * A binary polynomial.
  * @author UndeadScythes
  */
 public class Polynomial {
@@ -34,15 +36,15 @@ public class Polynomial {
         return new Polynomial(representation);
     }
 
-    public final int getDegree() {
+    public int getDegree() {
         return degree;
     }
 
-    public final int getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public final int getOrder() {
+    public int getOrder() {
         if(order == -1) {
             final GaloisLFSR lfsr = new GaloisLFSR(this.getDegree(), this, 1);
             lfsr.clock();
@@ -55,24 +57,24 @@ public class Polynomial {
         return order;
     }
 
-    public final int getCoeff(final int coeff) {
+    public int getCoeff(final int coeff) {
         return (((1 << coeff) & representation) != 0) ? 1 : 0;
     }
 
-    public final int toInt() {
+    public int toInt() {
         return representation;
     }
 
-    public final String toBinary() {
-        return Binary.toString(representation, degree);
+    public String toBinary() {
+        return BinaryUtils.toString(representation, degree);
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return toBinary();
     }
 
-    public final String toString(final String var) {
+    public String toString(final String var) {
         String binary = Integer.toBinaryString(representation);
         String temp = "";
         for(int i = 0; i < binary.length() - 2; i++) {
@@ -89,11 +91,11 @@ public class Polynomial {
         return temp.substring(0, temp.length() > 3 ? temp.length() - 3 : 0);
     }
 
-    public final boolean isMonomial() {
+    public boolean isMonomial() {
         return (1 & representation) == 1;
     }
 
-    public final boolean isIrreducible() {
+    public boolean isIrreducible() {
         int maxTest = (1 << degree) - 1;
         for(int i = 1; i < maxTest; i++) {
             for(int j = i; j < maxTest; j++) {
@@ -110,16 +112,16 @@ public class Polynomial {
         return true;
     }
 
-    public final boolean isPrimitive() {
+    public boolean isPrimitive() {
         return getOrder() == (1 << degree) - 1;
     }
 
-    public final void add(final Polynomial add) {
+    public void add(final Polynomial add) {
         representation ^= add.toInt();
         refresh();
     }
 
-    public final void multiply(final Polynomial multiply) {
+    public void multiply(final Polynomial multiply) {
         int temp = 0;
         for(int i = 0; i <= multiply.getDegree(); i++) {
             if(multiply.getCoeff(i) == 1) {
@@ -130,12 +132,12 @@ public class Polynomial {
         refresh();
     }
 
-    public final void multiplyMod(final Polynomial multiply, final Polynomial mod) {
+    public void multiplyMod(final Polynomial multiply, final Polynomial mod) {
         multiply(multiply);
         modulo(mod);
     }
 
-    public final void modulo(final Polynomial mod) {
+    public void modulo(final Polynomial mod) {
         int diff = getDegree() - mod.getDegree();
         while(diff >= 0) {
             add(Polynomial.product(mod, (1 << diff)));
@@ -143,8 +145,48 @@ public class Polynomial {
         }
     }
 
-    public final Polynomial nextPoly() {
+    public Polynomial nextPoly() {
         return new Polynomial(representation + 1);
+    }
+
+    public Polynomial getPrimitiveRoot() {
+        final int q = ((1 << degree) - 1) / order;
+        Polynomial alpha = new Polynomial(1);
+        while(alpha.getDegree() < degree) {
+            boolean flag = false;
+            if(Polynomial.toPowerMod(alpha, q, this).toInt() == 2) {
+                flag = true;
+                for(int i = 1; i < (1 << degree) - 1; i++) {
+                    if(Polynomial.toPowerMod(alpha, i, this).toInt() == 1) {
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            if(flag) {
+                break;
+            }
+            alpha = alpha.nextPoly();
+        }
+        return alpha;
+    }
+
+    public List<Polynomial> getClassReps(final Polynomial alpha) {
+        final int q = ((1 << degree) - 1) / order;
+        final List<Polynomial> reps = new ArrayList<Polynomial>();
+        Polynomial seqRep = new Polynomial(1);
+        for(int classNo = 1; classNo <= q; classNo++) {
+            reps.add(seqRep.copy());
+            final Polynomial nextClassRep = new Polynomial(0);
+            for(int i = 0; i < degree; i++) {
+                if(alpha.getCoeff(i) == 1) {
+                    nextClassRep.add(seqRep);
+                }
+                seqRep.multiplyMod(new Polynomial(2), this);
+            }
+            seqRep = nextClassRep;
+        }
+        return reps;
     }
 
     public static Polynomial product(final Polynomial polyA, final Polynomial polyB) {
@@ -191,7 +233,7 @@ public class Polynomial {
             polynomial = new Polynomial(test);
             if(polynomial.getDegree() > degree) {
                 return null;
-            }
+}
         }
         return polynomial;
     }

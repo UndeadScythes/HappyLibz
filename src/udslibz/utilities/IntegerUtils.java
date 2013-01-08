@@ -1,4 +1,6 @@
-package udslibz.algebra;
+package udslibz.utilities;
+
+
 
 import java.util.*;
 
@@ -6,7 +8,7 @@ import java.util.*;
  * Handle factors.
  * @author UndeadScythes
  */
-public class Factor {
+public class IntegerUtils {
     public static List<Integer> getPrimeFactors(final int number) {
         int test = number;
         final List<Integer> factors = new ArrayList<Integer>();
