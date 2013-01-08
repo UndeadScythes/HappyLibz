@@ -1,4 +1,4 @@
-package numbertheory;
+package udslibz.numbertheory;
 
 import udslibz.utilities.BinaryUtils;
 
