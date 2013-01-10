@@ -1,6 +1,6 @@
-package udslibz.prng;
+package udslibz;
 
-import udslibz.algebra.Polynomial;
+import udslibz.Polynomial;
 
 /**
  * A Galois LFSR, currently only binary.

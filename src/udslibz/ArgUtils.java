@@ -1,4 +1,4 @@
-package udslibz.utilities;
+package udslibz;
 
 /**
  * Utilities for fetching values from argument lists.
@@ -18,6 +18,15 @@ public final class ArgUtils {
             }
         }
         return def;
+    }
+
+    public static boolean getBool(final String[] args, final String tag) {
+        for(int i = 0; i < args.length; i++) {
+            if(args[i].equals(tag)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private ArgUtils() {}

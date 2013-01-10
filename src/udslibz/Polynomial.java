@@ -1,9 +1,6 @@
-package udslibz.algebra;
+package udslibz;
 
-import udslibz.prng.GaloisLFSR;
 import java.util.*;
-import udslibz.utilities.BinaryUtils;
-import udslibz.prng.GaloisLFSR;
 
 /**
  * A binary polynomial.
@@ -104,7 +101,7 @@ public class Polynomial {
                 if(a.getDegree() + b.getDegree() != degree) {
                     continue;
                 }
-                if(Polynomial.product(a, b).toInt() == representation) {
+                if(PolynomialUtils.product(a, b).toInt() == representation) {
                     return false;
                 }
             }
@@ -140,7 +137,7 @@ public class Polynomial {
     public void modulo(final Polynomial mod) {
         int diff = getDegree() - mod.getDegree();
         while(diff >= 0) {
-            add(Polynomial.product(mod, (1 << diff)));
+            add(PolynomialUtils.product(mod, (1 << diff)));
             diff = getDegree() - mod.getDegree();
         }
     }
@@ -154,10 +151,10 @@ public class Polynomial {
         Polynomial alpha = new Polynomial(1);
         while(alpha.getDegree() < degree) {
             boolean flag = false;
-            if(Polynomial.toPowerMod(alpha, q, this).toInt() == 2) {
+            if(PolynomialUtils.toPowerMod(alpha, q, this).toInt() == 2) {
                 flag = true;
                 for(int i = 1; i < (1 << degree) - 1; i++) {
-                    if(Polynomial.toPowerMod(alpha, i, this).toInt() == 1) {
+                    if(PolynomialUtils.toPowerMod(alpha, i, this).toInt() == 1) {
                         flag = false;
                         break;
                     }
@@ -187,80 +184,5 @@ public class Polynomial {
             seqRep = nextClassRep;
         }
         return reps;
-    }
-
-    public static Polynomial product(final Polynomial polyA, final Polynomial polyB) {
-        int temp = 0;
-        for(int i = 0; i <= polyA.getDegree(); i++) {
-            if(polyA.getCoeff(i) == 1) {
-                temp ^= (polyB.toInt() << i);
-            }
-        }
-        return new Polynomial(temp);
-    }
-
-    public static Polynomial product(final Polynomial polyA, final int polyB) {
-        int temp = 0;
-        for(int i = 0; i <= polyA.getDegree(); i++) {
-            if(polyA.getCoeff(i) == 1) {
-                temp ^= (polyB << i);
-            }
-        }
-        return new Polynomial(temp);
-    }
-
-    public static Polynomial toPower(final Polynomial poly, final int e) {
-        if(e == 0) return new Polynomial(1);
-        if(e == 1) return new Polynomial(poly.toInt());
-        return Polynomial.product(poly, Polynomial.toPower(poly, e - 1));
-    }
-
-    public static Polynomial toPowerMod(final Polynomial poly, final int e, final Polynomial mod) {
-        if(e == 0) return new Polynomial(1);
-        final Polynomial temp = new Polynomial(poly.toInt());
-        for(int i = 1; i < e; i++) {
-            temp.multiplyMod(poly, mod);
-        }
-        return temp;
-    }
-
-    public static Polynomial getPrimitive(final int degree, final int start) {
-        final int requiredOrder = (1 << degree) - 1;
-        int test = start;
-        Polynomial polynomial = new Polynomial(test);
-        while(polynomial.getWeight() % 2 == 0 || !polynomial.isMonomial() || polynomial.getDegree() < degree || polynomial.getOrder() != requiredOrder) {
-            test++;
-            polynomial = new Polynomial(test);
-            if(polynomial.getDegree() > degree) {
-                return null;
-}
-        }
-        return polynomial;
-    }
-
-    public static Polynomial getIrreducible(final int degree, final int start) {
-        int test = start;
-        Polynomial polynomial = new Polynomial(test);
-        while(polynomial.getWeight() % 2 == 0 || !polynomial.isMonomial() || polynomial.getDegree() < degree || !polynomial.isIrreducible()) {
-            test++;
-            polynomial = new Polynomial(test);
-            if(polynomial.getDegree() > degree) {
-                return null;
-            }
-        }
-        return polynomial;
-    }
-
-    public static Polynomial getStrictIrreducible(final int degree, final int start) {
-        int test = start;
-        Polynomial polynomial = new Polynomial(test);
-        while(polynomial.getWeight() % 2 == 0 || !polynomial.isMonomial() || polynomial.getDegree() < degree || !polynomial.isIrreducible() || polynomial.isPrimitive()) {
-            test++;
-            polynomial = new Polynomial(test);
-            if(polynomial.getDegree() > degree) {
-                return null;
-            }
-        }
-        return polynomial;
     }
 }
