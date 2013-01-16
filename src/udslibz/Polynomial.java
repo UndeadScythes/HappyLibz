@@ -118,6 +118,11 @@ public class Polynomial {
         refresh();
     }
 
+    public void subtract(final Polynomial sub) {
+        add(sub);
+        refresh();
+    }
+
     public void multiply(final Polynomial multiply) {
         int temp = 0;
         for(int i = 0; i <= multiply.getDegree(); i++) {
@@ -147,25 +152,53 @@ public class Polynomial {
     }
 
     public Polynomial getPrimitiveRoot() {
-        final int q = ((1 << degree) - 1) / order;
+        final int N = (1 << degree) - 1;
+        final int q = N / order;
         Polynomial alpha = new Polynomial(1);
         while(alpha.getDegree() < degree) {
-            boolean flag = false;
+            boolean primitive = false;
             if(PolynomialUtils.toPowerMod(alpha, q, this).toInt() == 2) {
-                flag = true;
-                for(int i = 1; i < (1 << degree) - 1; i++) {
+                primitive = true;
+                for(int i = 1; i < N; i++) {
                     if(PolynomialUtils.toPowerMod(alpha, i, this).toInt() == 1) {
-                        flag = false;
+                        primitive = false;
                         break;
                     }
                 }
             }
-            if(flag) {
+            if(primitive) {
                 break;
             }
             alpha = alpha.nextPoly();
         }
         return alpha;
+    }
+
+    public Polynomial getPrimitiveRoot(final Polynomial start) {
+        final int N = (1 << degree) - 1;
+        final int q = N / order;
+        Polynomial alpha = start.nextPoly();
+        boolean primitive = false;
+        while(alpha.getDegree() < degree) {
+            primitive = false;
+            if(PolynomialUtils.toPowerMod(alpha, q, this).toInt() == 2) {
+                primitive = true;
+                for(int i = 1; i < N; i++) {
+                    if(PolynomialUtils.toPowerMod(alpha, i, this).toInt() == 1) {
+                        primitive = false;
+                        break;
+                    }
+                }
+            }
+            if(primitive) {
+                break;
+            }
+            alpha = alpha.nextPoly();
+        }
+        if(primitive) {
+            return alpha;
+        }
+        return null;
     }
 
     public List<Polynomial> getClassReps(final Polynomial alpha) {
