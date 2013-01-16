@@ -1,7 +1,5 @@
 package udslibz;
 
-import udslibz.Sequence;
-import udslibz.Polynomial;
 import java.util.*;
 
 /**
@@ -36,6 +34,14 @@ public class ArrayUtils {
         return temp.substring(joiner.length());
     }
 
+    public static String join(final Sequence[] seqs, final int length, final String joiner) {
+        String temp = "";
+        for(Sequence seq : seqs) {
+            temp = temp.concat(joiner + seq.getSubSequence(0, length - 1).toString());
+        }
+        return temp.substring(joiner.length());
+    }
+
     public static String join(final int[] integers, final String joiner) {
         String temp = "";
         for(int integer : integers) {
@@ -56,6 +62,14 @@ public class ArrayUtils {
         String temp = "";
         for(Polynomial poly : polys) {
             temp = temp.concat(joiner + poly.toBinary());
+        }
+        return temp.substring(joiner.length());
+    }
+
+    public static String joinBinary(final int[] polys, final int length, final String joiner) {
+        String temp = "";
+        for(int poly : polys) {
+            temp = temp.concat(joiner + BinaryUtils.toString(poly, length));
         }
         return temp.substring(joiner.length());
     }
