@@ -1,7 +1,5 @@
 package udslibz;
 
-import udslibz.Polynomial;
-
 /**
  * A sequence of values, currently only binary.
  * @author UndeadScythes
@@ -73,7 +71,7 @@ public class Sequence {
     }
 
     public Sequence getSubSequence(final int start, final int end) {
-        final int newLength = end - start;
+        final int newLength = end - start + 1;
         final Sequence subSeq = new Sequence(newLength);
         for(int i = 0; i < newLength; i++) {
             subSeq.setElement(i, getElement(i + start));
@@ -127,10 +125,14 @@ public class Sequence {
             return -1;
         }
         for(int i = 0; i <= length - seqLength; i++) {
-            if(getSubSequence(i, i + seqLength).equalTo(seq)) {
+            if(getSubSequence(i, i + seqLength - 1).equalTo(seq)) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public Polynomial getMinimal() {
+        return PolynomialUtils.berlekampMassey(this);
     }
 }
