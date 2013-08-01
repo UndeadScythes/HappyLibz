@@ -151,7 +151,7 @@ public class Polynomial {
         return new Polynomial(representation + 1);
     }
 
-    public Polynomial getPrimitiveRoot() {
+    public Polynomial getStrictPrimitiveRoot() {
         final int N = (1 << degree) - 1;
         final int q = N / order;
         Polynomial alpha = new Polynomial(1);
@@ -174,7 +174,30 @@ public class Polynomial {
         return alpha;
     }
 
-    public Polynomial getPrimitiveRoot(final Polynomial start) {
+    public Polynomial getPrimitiveRoot() {
+        final int N = (1 << degree) - 1;
+        final int q = N / order;
+        Polynomial alpha = new Polynomial(1);
+        while(alpha.getDegree() < degree) {
+            boolean primitive = false;
+            //if(PolynomialUtils.toPowerMod(alpha, q, this).toInt() == 2) {
+                primitive = true;
+                for(int i = 1; i < N; i++) {
+                    if(PolynomialUtils.toPowerMod(alpha, i, this).toInt() == 1) {
+                        primitive = false;
+                        break;
+                    }
+                }
+            //}
+            if(primitive) {
+                break;
+            }
+            alpha = alpha.nextPoly();
+        }
+        return alpha;
+    }
+
+    public Polynomial getStrictPrimitiveRoot(final Polynomial start) {
         final int N = (1 << degree) - 1;
         final int q = N / order;
         Polynomial alpha = start.nextPoly();
@@ -190,6 +213,33 @@ public class Polynomial {
                     }
                 }
             }
+            if(primitive) {
+                break;
+            }
+            alpha = alpha.nextPoly();
+        }
+        if(primitive) {
+            return alpha;
+        }
+        return null;
+    }
+
+    public Polynomial getPrimitiveRoot(final Polynomial start) {
+        final int N = (1 << degree) - 1;
+        final int q = N / order;
+        Polynomial alpha = start.nextPoly();
+        boolean primitive = false;
+        while(alpha.getDegree() < degree) {
+            primitive = false;
+            //if(PolynomialUtils.toPowerMod(alpha, q, this).toInt() == 2) {
+                primitive = true;
+                for(int i = 1; i < N; i++) {
+                    if(PolynomialUtils.toPowerMod(alpha, i, this).toInt() == 1) {
+                        primitive = false;
+                        break;
+                    }
+                }
+            //}
             if(primitive) {
                 break;
             }

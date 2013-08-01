@@ -1,5 +1,8 @@
 package udslibz;
 
+import java.io.*;
+import java.util.*;
+
 /**
  * A sequence of values, currently only binary.
  * @author UndeadScythes
@@ -18,6 +21,56 @@ public class Sequence {
     public Sequence(final int length) {
         this.length = length;
         this.sequence = new int[(length / PART_LEN) + 1];
+    }
+
+    public Sequence(final BufferedReader in) throws IOException {
+        final ArrayList<Integer> parts = new ArrayList<Integer>();
+        int pos = 0;
+        int currentInt = 0;
+        int len = 0;
+        int next = in.read();
+        while(next != -1) {
+            if(pos == 0) {
+                currentInt = 0;
+            }
+            if(next != 48) {
+                currentInt ^= (1 << pos);
+            }
+            pos = (pos + 1) % PART_LEN;
+            len++;
+            if(pos == 0) {
+                parts.add(currentInt);
+            }
+            next = in.read();
+        }
+        if(pos != 0) {
+            parts.add(currentInt);
+        }
+        this.length = len;
+        sequence = new int[parts.size()];
+        for(int i = 0; i < parts.size(); i++) {
+            sequence[i] = parts.get(i);
+        }
+    }
+
+    public int weight() {
+        int weight = 0;
+        for(int i = 0; i < length; i++) {
+            if(getElement(i) != 0) {
+                weight++;
+            }
+        }
+        return weight;
+    }
+
+    public void xor(final Sequence seq) {
+        for(int i = 0; i < length; i++) {
+            setElement(i, getElement(i) ^ seq.getElement(i));
+        }
+    }
+
+    public Sequence copy() {
+        return new Sequence(length, sequence);
     }
 
     public int getElement(final int index) {

@@ -147,6 +147,6 @@ public class PolynomialUtils {
             }
             N++;
         }
-        return C;
+        return new Polynomial(BinaryUtils.reverse(C.toInt(), C.getDegree() + 1));
     }
 }

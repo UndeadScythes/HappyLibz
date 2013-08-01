@@ -1,23 +1,23 @@
 package udslibz;
 
 /**
- * A Galois LFSR, currently only binary.
+ *
  * @author UndeadScythes
  */
-public class GaloisLFSR {
+public class FibonacciLFSR {
     private final transient int feedback;
-    private final transient int maxTap;
+    private final transient int lastReg;
     private transient int state;
 
-    public GaloisLFSR(final int degree, final Polynomial feedback, final int seed) {
+    public FibonacciLFSR(final int degree, final Polynomial feedback, final int seed) {
         this.feedback = feedback.toInt();
-        maxTap = 1 << degree;
+        lastReg = degree - 1;
         state = seed;
     }
 
     public final void clock() {
-        state <<= 1;
-        state ^= ((maxTap & state) == 0) ? 0 : feedback;
+        final int bit = Integer.bitCount(state & feedback) % 2;
+        state = (state >> 1) | (bit << lastReg);
     }
 
     public final int getState() {
@@ -33,6 +33,6 @@ public class GaloisLFSR {
     }
 
     public final int getOutput() {
-        return ((state & (maxTap >> 1)) == 0) ? 0 : 1;
+        return getBit(0);
     }
 }

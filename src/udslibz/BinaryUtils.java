@@ -40,4 +40,14 @@ public class BinaryUtils {
         }
         return decimal;
     }
+
+    public static int reverse(final int value, final int length) {
+        int reversed = 0;
+        for(int i = 0; i < length; i++) {
+            if(((1 << i) & value) != 0) {
+                reversed |= (1 << length - i - 1);
+            }
+        }
+        return reversed;
+    }
 }
