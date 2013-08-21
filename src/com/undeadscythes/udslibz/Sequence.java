@@ -1,4 +1,4 @@
-package udslibz;
+package com.undeadscythes.udslibz;
 
 import java.io.*;
 import java.util.*;

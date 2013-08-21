@@ -1,4 +1,4 @@
-package udslibz;
+package com.undeadscythes.udslibz;
 
 /**
  * A Galois LFSR, currently only binary.

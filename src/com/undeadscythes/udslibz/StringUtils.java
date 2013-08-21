@@ -1,7 +1,6 @@
-package udslibz;
+package com.undeadscythes.udslibz;
 
 /**
- *
  * @author UndeadScythes
  */
 public class StringUtils {
@@ -12,4 +11,6 @@ public class StringUtils {
         }
         return reversed;
     }
+
+    private StringUtils() {}
 }

@@ -1,10 +1,9 @@
-package udslibz;
+package com.undeadscythes.udslibz;
 
 /**
- * Utilities for fetching values from argument lists.
  * @author UndeadScythes
  */
-public final class ArgUtils {
+public class ArgUtils {
     public static int getInt(final String[] args, final String tag, final int def) {
         for(int i = 0; i < args.length; i++) {
             if(args[i].equals(tag)) {
